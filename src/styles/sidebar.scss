@@ -3,13 +3,13 @@
   .main-container {
     min-height: 100%;
     transition: margin-left .28s;
-    margin-left: 180px;
+    margin-left: 200px;
     position: relative;
   }
   // 侧边栏
   .sidebar-container {
     transition: width 0.28s;
-    width: 180px !important;
+    width: 200px !important;
     height: 100%;
     position: fixed;
     font-size: 0px;
@@ -21,6 +21,9 @@
     //reset element-ui css
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+    }
+    .el-scrollbar {
+      height: calc(100% - 50px);
     }
     .el-scrollbar__bar.is-vertical{
       right: 0px;
@@ -53,22 +56,22 @@
   }
   .hideSidebar {
     .sidebar-container {
-      width: 36px !important;
+      width: 50px !important;
     }
     .main-container {
-      margin-left: 36px;
+      margin-left: 50px;
     }
     .submenu-title-noDropdown {
-      padding-left: 10px !important;
+      padding-left: 16px !important;
       position: relative;
       .el-tooltip {
-        padding: 0 10px !important;
+        padding-left: 16px !important;
       }
     }
     .el-submenu {
       overflow: hidden;
       &>.el-submenu__title {
-        padding-left: 10px !important;
+        padding-left: 16px !important;
         .el-submenu__icon-arrow {
           display: none;
         }

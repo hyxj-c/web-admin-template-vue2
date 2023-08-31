@@ -22,22 +22,22 @@ import Layout from "../views/layout/Layout";
 export const constantRoutes = [
   {
     path: "/",
-    name: "Dashboard",
     component: Layout,
     redirect: "/dashboard",
     meta: {title: "Dashboard"},
     children: [
       {
         path: "/dashboard",
+        name: "Dashboard",
         component: () => import("@/views/dashboard/index"),
-        meta: { title: "哲思学院后台", icon: "study" }
+        meta: { title: "Dashboard", icon: "study", affix: true }
       }
     ]
   },
   {
         path: "/teacher",
         component: Layout,
-        redirect: "/teacher/table",
+        redirect: "/teacher/list",
         name: "讲师管理",
         meta: { title: "讲师管理", icon: "people" },
         children: [
