@@ -58,7 +58,7 @@ export const constantRoutes = [
       {
         path: "user/update/:id",
         name: "用户修改",
-        component: () => import("@/views/dashboard/index"),
+        component: () => import("@/views/acl/user/form"),
         meta: { title: "用户修改", hidden: true },
       },
       {
