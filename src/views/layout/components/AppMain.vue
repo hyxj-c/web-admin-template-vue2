@@ -1,7 +1,7 @@
 <template>
   <section class="app-main scroll-bar">
     <transition name="fade-transform" mode="out-in">
-      <keep-alive :include="cashedViews">
+      <keep-alive :include="cachedViews">
         <router-view />
       </keep-alive>
     </transition>
@@ -12,8 +12,8 @@
 export default {
   name: "AppMain",
   computed: {
-    cashedViews() {
-      return this.$store.getters.cashedViews
+    cachedViews() {
+      return this.$store.getters.cachedViews
     }
   }
 };
@@ -25,7 +25,5 @@ export default {
   position: relative;
   height: calc(100vh - 50px - 43px);
   overflow: auto;
-  /* min-height: calc(100vh - 50px); */
-  /* overflow: hidden; */
 }
 </style>

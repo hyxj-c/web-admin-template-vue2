@@ -1,0 +1,166 @@
+<template>
+  <div class="app-container">
+    <!-- 查询表单 -->
+    <el-form :inline="true" class="demo-form-inline">
+      <el-form-item>
+        <el-input size="medium" v-model="searchObj.name" placeholder="角色名称" />
+      </el-form-item>
+      <el-button size="medium" type="primary" icon="el-icon-search" @click="fetchData()">查询</el-button>
+      <el-button size="medium" type="default" @click="resetData()">清空</el-button>
+    </el-form>
+
+    <!-- 工具条 -->
+    <div>
+      <!-- <el-button type="warning" size="mini" @click="clickAdd()" v-if="hasPerm('role.add')">添加</el-button>
+      <el-button type="danger" size="mini" @click="batchRemove()" v-if="hasPerm('role.remove')">批量删除</el-button> -->
+      <el-button type="warning" size="mini" @click="clickAdd()">添加</el-button>
+      <el-button type="danger" size="mini" @click="batchRemove()">批量删除</el-button>
+    </div>
+
+    <!-- 角色列表 -->
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      stripe
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55" />
+      <el-table-column label="序号" width="70" align="center">
+        <template slot-scope="scope">{{ (page - 1) * limit + scope.$index + 1 }}</template>
+      </el-table-column>
+      <el-table-column prop="name" label="角色名称" />
+      <el-table-column label="操作" width="200" align="center">
+        <template slot-scope="scope">
+          <router-link :to="'/acl/role/distribution/'+scope.row.id" style="margin-right:8px">
+            <!-- <el-button type="info" size="mini" icon="el-icon-info" v-if="hasPerm('role.acl')"></el-button> -->
+            <el-button type="info" size="mini" icon="el-icon-info"></el-button>
+          </router-link>
+          <router-link :to="'/acl/role/update/'+scope.row.id" style="margin-right:8px">
+            <!-- <el-button type="primary" size="mini" icon="el-icon-edit" v-if="hasPerm('role.update')"></el-button> -->
+            <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
+          </router-link>
+          <!-- <el-button type="danger" size="mini" icon="el-icon-delete" v-if="hasPerm('role.remove')" @click="removeDataById(scope.row.id)">
+          </el-button> -->
+          <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeDataById(scope.row.id)">
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页组件 -->
+    <el-pagination
+      :current-page="page"
+      :total="total"
+      :page-size="limit"
+      :page-sizes="[5, 10, 20, 30, 40, 50, 100]"
+      style="padding: 30px 0; text-align: center;"
+      layout="sizes, prev, pager, next, jumper, ->, total, slot"
+      @current-change="fetchData"
+      @size-change="changeSize"
+    />
+  </div>
+</template>
+
+<script>
+import {getPageList, removeById, removeRows } from "@/api/acl/role"
+
+export default {
+  data() {
+    return {
+      listLoading: true, // 数据是否正在加载
+      list: null, // 角色列表
+      total: 0, // 数据库中的总记录数
+      page: 1, // 默认页码
+      limit: 10, // 每页记录数
+      searchObj: {}, // 查询表单对象
+      multipleSelection: [] // 批量选择中选择的记录列表
+    };
+  },
+  // 生命周期函数：内存准备完毕，页面尚未渲染
+  created() {
+    this.fetchData();
+  },
+  methods: {
+    // 加载角色列表数据
+    fetchData(page = 1) {
+      this.page = page;
+      getPageList(this.page, this.limit, this.searchObj)
+        .then(response => {
+          this.list = response.data.items;
+          this.total = response.data.total;
+          this.listLoading = false;
+        });
+    },
+    // 根据id删除数据
+    removeDataById(id) {
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          return removeById(id);
+        })
+        .then(() => {
+          this.$message({ type: "success", message: "删除成功!" });
+          this.fetchData(this.page);
+        })
+        .catch(error => {
+          if (error === "cancel") {
+            this.$message({ type: "info", message: "已取消删除" });
+          }
+        });
+    },
+    // 批量删除
+    batchRemove() {
+      if (this.multipleSelection.length === 0) {
+        this.$message({ type: "warning", message: "请选择要删除的记录!" });
+        return;
+      }
+
+      this.$confirm("此操作将永久删除该记录, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          // 遍历selection，将id取出放入id列表
+          const idList = [];
+          this.multipleSelection.forEach(item => idList.push(item.id));
+          return removeRows(idList);
+        })
+        .then(response => {
+          this.$message({ type: "success", message: "删除成功!" });
+          this.fetchData(this.page);
+        })
+        .catch(error => {
+          if (error === "cancel") {
+            this.$message({ type: "info", message: "已取消删除" });
+          }
+        });
+    },
+    // 当每页显示条数发生改变时
+    changeSize(size) {
+      this.limit = size;
+      this.fetchData(1);
+    },
+    // 重置查询表单
+    resetData() {
+      this.searchObj = {};
+      this.fetchData();
+    },
+    // 当表格复选框选项发生变化的时候触发
+    handleSelectionChange(selection) {
+      console.log("handleSelectionChange......");
+      console.log(selection);
+      this.multipleSelection = selection;
+    },
+    // 点击了添加
+    clickAdd() {
+      this.$router.push({ path: "/acl/role/add" });
+    }
+  }
+};
+</script>
+

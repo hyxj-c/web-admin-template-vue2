@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!item.hidden&&item.children" class="menu-wrapper">
+  <div v-if="!item.meta.hidden&&item.children" class="menu-wrapper">
 
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link :to="resolvePath(onlyOneChild.path)">
@@ -15,7 +15,7 @@
       </template>
 
       <template v-for="child in item.children">
-        <template v-if="!child.hidden">
+        <template v-if="!child.meta.hidden">
           <sidebar-item
             v-if="child.children&&child.children.length>0"
             :is-nest="true"
@@ -67,7 +67,7 @@ export default {
   methods: {
     hasOneShowingChild(children, parent) {
       const showingChildren = children.filter(item => {
-        if (item.hidden) {
+        if (item.meta.hidden) {
           return false
         } else {
           // Temp set(will be used if only has one showing child)

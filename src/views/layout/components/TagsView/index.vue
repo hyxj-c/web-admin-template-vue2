@@ -53,8 +53,10 @@ export default {
   },
   watch: {
     $route() {
-      this.addTags()
-      this.moveToCurrentTag()
+      if (!this.$route.meta.hidden) {
+        this.addTags()
+        this.moveToCurrentTag()
+      }
     },
     visible(value) {
       if (value) {
