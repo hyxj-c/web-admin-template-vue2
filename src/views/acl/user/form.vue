@@ -5,10 +5,6 @@
         <el-input v-model="user.username" />
       </el-form-item>
 
-      <el-form-item label="用户角色">
-        <el-input v-model="user.roleName"/>
-      </el-form-item>
-
       <el-form-item v-if="!user.id" label="用户密码" prop="password">
         <el-input v-model="user.password" />
       </el-form-item>
@@ -28,7 +24,6 @@ import { getById, updateById, save } from "@/api/acl/user";
 
 const defaultForm = {
   username: "",
-  roleName: "",
   password: ""
 };
 

@@ -18,6 +18,29 @@ export function getPageList(page, limit, searchObj) {
 }
 
 /**
+ * 获取所有角色
+ * @returns
+ */
+export function getAll() {
+  return request({
+    url: `${api_name}`,
+    method: "get",
+  });
+}
+
+/**
+ * 获取分配的角色id
+ * @param {用户id} userId 
+ * @returns 
+ */
+export function getAssignedRoleIds(userId) {
+  return request({
+    url: `${api_name}/getAssignedRoleIds/${userId}`,
+    method: "get",
+  });
+}
+
+/**
  * 根据id获取角色信息
  * @param {角色id} id 
  * @returns 

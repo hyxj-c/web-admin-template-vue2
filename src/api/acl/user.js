@@ -80,18 +80,18 @@ export function removeRows(idList) {
   });
 }
 
-export function getAssignedAndAllRole(userId) {
+/**
+ * 为用户分配角色
+ * @param {用户id} userId 
+ * @param {角色id数组} roleIdList
+ * @returns 
+ */
+export function assignRole(userId, roleIdList) {
   return request({
-    url: `${api_name}/getAssignedAndAllRole/${userId}`,
-    method: "get"
-  });
-}
-
-export function saveAssign(userId, roleId) {
-  return request({
-    url: `${api_name}/doAssign`,
+    url: `${api_name}/assignRole`,
     method: "post",
-    params: { userId, roleId }
+    params: { userId },
+    data: roleIdList
   });
 }
 

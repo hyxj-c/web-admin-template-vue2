@@ -24,7 +24,9 @@
         <template slot-scope="scope">{{ (page - 1) * limit + scope.$index + 1 }}</template>
       </el-table-column>
       <el-table-column prop="username" label="用户名" width="150" />
-      <el-table-column prop="roleName" label="用户角色" />
+      <el-table-column prop="roleName" label="用户角色">
+        <template slot-scope="scope">{{scope.row.roleName ? scope.row.roleName : '暂未分配'}}</template>
+      </el-table-column>
       <el-table-column prop="gmtCreated" label="创建时间" width="180" />
 
       <el-table-column label="操作" width="230" align="center">
