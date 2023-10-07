@@ -102,3 +102,18 @@ export function removeRows(idList) {
     data: idList
   });
 }
+
+/**
+ * 给角色分配权限
+ * @param {角色id} roleId 
+ * @param {权限id数组} permissionIdList 
+ * @returns 
+ */
+export function doAssignPermission(roleId, permissionIdList) {
+  return request({
+    url: `${api_name}/assignPermission`,
+    method: "post",
+    params: { roleId },
+    data: permissionIdList
+  });
+}

@@ -21,7 +21,8 @@
 </template>
 
 <script>
-import menu from "@/api/acl/menu";
+import { getPermissionTree } from "@/api/acl/menu";
+import { doAssignPermission } from "@/api/acl/role";
 
 export default {
   data() {
@@ -49,8 +50,8 @@ export default {
     },
     // 根据角色id查询权限数据
     fetchDataById(roleId) {
-      menu.getPermissionTree(roleId).then(response => {
-        this.data = response.data.permissionList;
+      getPermissionTree(roleId).then(response => {
+        this.data = response.data.item;
         this.setCheckedKey(this.data);
       });
     },
@@ -58,7 +59,7 @@ export default {
     setCheckedKey(treeList) {
       for (const item of treeList) {
         // 只把最低的子级添加到选中的key里面，不添加父级，若添加了父级，tree组件则会把所有的子级都选中
-        if (item.select && item.level == 4) {
+        if (item.selected && item.children.length === 0) {
           this.checkedKey.push(item.id);
         }
         if (item.children) {
@@ -69,14 +70,15 @@ export default {
     // 调用接口进行保存
     save() {
       this.saveBtnDisabled = true;
-      let keys = this.$refs.tree
+      const keys = this.$refs.tree
         .getCheckedKeys()
         .concat(this.$refs.tree.getHalfCheckedKeys());
-      let stringIds = keys.join(","); // 把id数组转化为id字符串
-
-      menu.doAssignPermission(this.roleId, stringIds).then(response => {
+        
+      doAssignPermission(this.roleId, keys).then(response => {
         this.$message({ type: "success", message: "保存成功" });
         this.$router.push({ path: "/acl/role/list" });
+      }).catch(error => {
+        this.saveBtnDisabled = false;
       });
     }
   }

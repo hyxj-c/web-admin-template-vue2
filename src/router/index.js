@@ -88,13 +88,13 @@ export const constantRoutes = [
       {
         path: "role/distribution/:id",
         name: "角色权限",
-        component: () => import("@/views/dashboard/index"),
+        component: () => import("@/views/acl/role/authorityForm"),
         meta: { title: "角色权限", hidden: true },
       },
       {
         path: "menu/list",
         name: "菜单管理",
-        component: () => import("@/views/dashboard/index"),
+        component: () => import("@/views/acl/menu/list"),
         meta: { title: "菜单管理" }
       }
     ]
