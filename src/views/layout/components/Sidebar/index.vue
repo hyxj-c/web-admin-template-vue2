@@ -26,12 +26,9 @@ export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      // 'routes',
+      'routes',
       'sidebar'
     ]),
-    routes() {
-      return this.$router.options.routes
-    },
     isCollapse() {
       return !this.sidebar.opened
     }

@@ -11,10 +11,8 @@
 
     <!-- 工具条 -->
     <div>
-      <!-- <el-button type="warning" size="mini" @click="clickAdd()" v-if="hasPerm('role.add')">添加</el-button>
-      <el-button type="danger" size="mini" @click="batchRemove()" v-if="hasPerm('role.remove')">批量删除</el-button> -->
-      <el-button type="warning" size="mini" @click="clickAdd()">添加</el-button>
-      <el-button type="danger" size="mini" @click="batchRemove()">批量删除</el-button>
+      <el-button type="warning" size="mini" @click="clickAdd()" v-if="hasPerm('role.add')">添加</el-button>
+      <el-button type="danger" size="mini" @click="batchRemove()" v-if="hasPerm('role.remove')">批量删除</el-button>
     </div>
 
     <!-- 角色列表 -->
@@ -32,17 +30,13 @@
       <el-table-column prop="name" label="角色名称" />
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
-          <router-link :to="'/acl/role/distribution/'+scope.row.id" style="margin-right:8px">
-            <!-- <el-button type="info" size="mini" icon="el-icon-info" v-if="hasPerm('role.acl')"></el-button> -->
-            <el-button type="info" size="mini" icon="el-icon-info"></el-button>
+          <router-link :to="'/acl/role/permission/'+scope.row.id" style="margin-right:8px">
+            <el-button type="info" size="mini" icon="el-icon-info" v-if="hasPerm('role.viewPermission')"></el-button>
           </router-link>
           <router-link :to="'/acl/role/update/'+scope.row.id" style="margin-right:8px">
-            <!-- <el-button type="primary" size="mini" icon="el-icon-edit" v-if="hasPerm('role.update')"></el-button> -->
-            <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" v-if="hasPerm('role.update')"></el-button>
           </router-link>
-          <!-- <el-button type="danger" size="mini" icon="el-icon-delete" v-if="hasPerm('role.remove')" @click="removeDataById(scope.row.id)">
-          </el-button> -->
-          <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeDataById(scope.row.id)">
+          <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeDataById(scope.row.id)" v-if="hasPerm('role.remove')">
           </el-button>
         </template>
       </el-table-column>
@@ -152,8 +146,6 @@ export default {
     },
     // 当表格复选框选项发生变化的时候触发
     handleSelectionChange(selection) {
-      console.log("handleSelectionChange......");
-      console.log(selection);
       this.multipleSelection = selection;
     },
     // 点击了添加

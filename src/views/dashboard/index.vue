@@ -1,10 +1,8 @@
 <template>
   <div class="dashboard-container">
-    <!-- <div class="dashboard-text">用户名:{{ name }}</div> -->
-    <div class="dashboard-text">用户名:</div>
+    <div class="dashboard-text">用户名：{{ name }}</div>
     <div class="dashboard-text">
-      用户角色:
-      <!-- <span v-for="(role, index) in roles" :key="role"><span v-if="index > 0">、</span>{{ role }}</span> -->
+      用户角色：<span v-for="(role, index) in roles" :key="role"><span v-if="index > 0">、</span>{{ role }}</span>
     </div>
   </div>
 </template>
@@ -15,7 +13,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "Dashboard",
   computed: {
-    // ...mapGetters(["name", "roles"])
+    ...mapGetters(["name", "roles"])
   }
 };
 </script>

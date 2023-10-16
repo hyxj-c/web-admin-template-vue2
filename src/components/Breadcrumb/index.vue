@@ -3,7 +3,7 @@
     <transition-group name="breadcrumb">
       <template v-for="(item, index) in levelList">
         <el-breadcrumb-item v-if="item.meta.title" :key="item.path">
-          <span v-if="item.redirect==='noredirect' || index===levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
+          <span v-if="!item.redirect || index === levelList.length - 1" class="no-redirect">{{ item.meta.title }}</span>
           <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
         </el-breadcrumb-item>
       </template>
@@ -37,15 +37,9 @@ export default {
       })
       const first = matched[0]
       if (first && first.name !== 'Dashboard') {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+        matched = [{ path: '/', redirect: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
       }
       this.levelList = matched
-    },
-    pathCompile(path) {
-      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
-      const { params } = this.$route
-      var toPath = pathToRegexp.compile(path)
-      return toPath(params)
     },
     handleLink(item) {
       const { redirect, path } = item
@@ -54,6 +48,12 @@ export default {
         return
       }
       this.$router.push(this.pathCompile(path))
+    },
+    pathCompile(path) {
+      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
+      const { params } = this.$route
+      var toPath = pathToRegexp.compile(path)
+      return toPath(params)
     }
   }
 }

@@ -14,7 +14,7 @@
       <router-link style="margin-right: 10px" :to="'/acl/user/list'">
         <el-button size="small">取消</el-button>
       </router-link>
-      <el-button size="small" :disabled="saveBtnDisabled" type="primary" @click="saveAssign">保存</el-button>
+      <el-button size="small" :disabled="saveBtnDisabled" type="primary" @click="saveAssign" v-if="hasPerm('user.assignRole')">保存</el-button>
     </el-row>
   </div>
 </template>

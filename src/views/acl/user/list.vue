@@ -11,10 +11,8 @@
 
     <!-- 工具条 -->
     <div>
-      <!-- <el-button type="warning" size="mini" @click="clickAddUser()" v-if="hasPerm('user.add')">添加</el-button>
-      <el-button type="danger" size="mini" @click="removeRows()" v-if="hasPerm('user.remove')">批量删除</el-button> -->
-      <el-button type="warning" size="mini" @click="clickAddUser()">添加</el-button>
-      <el-button type="danger" size="mini" @click="removeRows()">批量删除</el-button>
+      <el-button type="warning" size="mini" @click="clickAddUser()" v-if="hasPerm('user.add')">添加</el-button>
+      <el-button type="danger" size="mini" @click="removeRows()" v-if="hasPerm('user.remove')">批量删除</el-button>
     </div>
 
     <!-- 用户列表 -->
@@ -32,18 +30,13 @@
       <el-table-column label="操作" width="230" align="center">
         <template slot-scope="scope">
           <router-link :to="'/acl/user/role/' + scope.row.id" style="margin-right:8px">
-            <!-- <el-button type="info" size="mini" icon="el-icon-info" v-if="hasPerm('user.assgin')"> -->
-            <el-button type="info" size="mini" icon="el-icon-info">
-            </el-button>
+            <el-button type="info" size="mini" icon="el-icon-info" v-if="hasPerm('user.viewRole')"></el-button>
           </router-link>
           <router-link :to="'/acl/user/update/' + scope.row.id" style="margin-right:8px">
-            <!-- <el-button type="primary" size="mini" icon="el-icon-edit" v-if="hasPerm('user.update')"> -->
-            <el-button type="primary" size="mini" icon="el-icon-edit">
-            </el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" v-if="hasPerm('user.update')"></el-button>
           </router-link>
-          <!-- <el-button type="danger" size="mini" icon="el-icon-delete"
-            @click="removeDataById(scope.row.id)" v-if="hasPerm('user.remove')"></el-button> -->
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="removeDataById(scope.row.id)"></el-button>
+          <el-button type="danger" size="mini" icon="el-icon-delete"
+            @click="removeDataById(scope.row.id)" v-if="hasPerm('user.remove')"></el-button>
         </template>
       </el-table-column>
     </el-table>

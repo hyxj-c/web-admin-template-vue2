@@ -14,61 +14,39 @@
       <el-table-column prop="component" label="组件路径" sortable width="180"></el-table-column>
       <el-table-column prop="permissionValue" label="权限值"></el-table-column>
       <el-table-column label="操作">
-        <!-- <template slot-scope="scope">
-          <el-button
-            v-if="(scope.row.level == 1 || scope.row.level == 2) && hasPerm('permission.add')"
-            type="text"
-            size="mini"
-            @click="clickAddMenu(scope.row.id)"
-          >添加菜单</el-button>
-          <el-button
-            v-if="scope.row.level == 3 &&  hasPerm('permission.add')"
-            type="text"
-            size="mini"
-            @click="clickAddPermission(scope.row.id)"
-          >添加功能</el-button>
-          <el-button
-            v-if="scope.row.level == 4 &&  hasPerm('permission.update')"
-            type="text"
-            size="mini"
-            @click="clickUpdatePermission(scope.row)"
-          >修改功能</el-button>
-          <el-button
-            v-if="scope.row.level != 4 &&  hasPerm('permission.update')"
-            type="text"
-            size="mini"
-            @click="clickUpdateMenu(scope.row)"
-          >修改</el-button>
-          <el-button
-            type="text"
-            size="mini"
-            @click="remove(scope.row.id)"
-            v-if="hasPerm('permission.remove')"
-          >删除</el-button>
-        </template> -->
         <template slot-scope="scope">
           <el-button
-            v-if="(scope.row.level == 1 || scope.row.level == 2)"
+            v-if="(scope.row.type === 1) && hasPerm('permission.add')"
             type="text"
             size="mini"
             @click="clickAddMenu(scope.row.id)"
-          >添加菜单</el-button>
+          >
+            添加菜单
+          </el-button>
           <el-button
-            v-if="(scope.row.level == 3)"
+            v-if="(scope.row.type === 1) && hasPerm('permission.add')"
             type="text"
             size="mini"
             @click="clickAddPermission(scope.row.id)"
-          >添加功能</el-button>
+          >
+            添加功能
+          </el-button>
           <el-button
+            v-if="hasPerm('permission.update')"
             type="text"
             size="mini"
             @click="clickUpdate(scope.row)"
-          >修改</el-button>
+          >
+            修改
+          </el-button>
           <el-button
+            v-if="hasPerm('permission.remove')"
             type="text"
             size="mini"
             @click="remove(scope.row)"
-          >删除</el-button>
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -85,6 +63,9 @@
         <el-form-item label="组件路径" prop="component">
           <el-input v-model="menu.component" />
         </el-form-item>
+        <el-form-item label="排序权重" prop="weight">
+          <el-input-number v-model="menu.weight" :min="1" :max="10" />
+        </el-form-item>
         <el-form-item label="菜单图标" prop="icon">
           <svg-icon :iconClass="menu.icon" />
           <el-button
@@ -93,10 +74,16 @@
             size="medium"
             @click="dialogMenuIconVisible = true"
           >选择</el-button>
+          <el-button
+            style="margin-left: 5px"
+            type="text"
+            size="medium"
+            @click="menu.icon = ''"
+          >取消</el-button>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="restData()">取 消</el-button>
+        <el-button @click="resetData()">取 消</el-button>
         <el-button type="primary" @click="addOrUpdateMenu()">确 定</el-button>
       </div>
     </el-dialog>
@@ -121,9 +108,12 @@
         <el-form-item label="功能权限值" prop="permissionValue">
           <el-input v-model="permission.permissionValue" />
         </el-form-item>
+        <el-form-item label="排序权重" prop="weight">
+          <el-input-number v-model="permission.weight" :min="1" :max="10" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="restData()">取 消</el-button>
+        <el-button @click="resetData()">取 消</el-button>
         <el-button type="primary" @click="addOrUpdatePermission()">确 定</el-button>
       </div>
     </el-dialog>
@@ -150,6 +140,7 @@
 
 <script>
 import { getPermissionMenuStructure, save, update, batchRemove } from "@/api/acl/menu";
+import { resetRouter } from "@/router"
 
 const icons = [
   "bug",
@@ -203,6 +194,7 @@ const menuForm = {
   pid: 0,
   path: "",
   component: "",
+  weight: 5,
   icon: "",
   type: "1"
 };
@@ -212,6 +204,7 @@ const perForm = {
   name: "",
   path: "",
   component: "",
+  weight: 5,
   pid: 0
 };
 
@@ -223,7 +216,7 @@ export default {
       permission: {...perForm},
       menuIcons: icons,
       selectedIcon: "",
-      currentIndex: -1,
+      currentIndex: -1, // selected icon index
       dialogMenuTitle: "添加菜单",
       dialogMenuVisible: false,
       dialogPermissionTitle: "添加功能",
@@ -231,20 +224,11 @@ export default {
       dialogMenuIconVisible: false,
       menuValidateRules: {
         name: [{ required: true, trigger: "blur", message: "菜单名必须输入" }],
-        path: [
-          { required: true, trigger: "blur", message: "菜单路径必须输入" }
-        ],
-        component: [
-          { required: true, trigger: "blur", message: "组件名称必须输入" }
-        ]
+        path: [{ required: true, trigger: "blur", message: "菜单路径必须输入" }],
       },
       permissionValidateRules: {
-        name: [
-          { required: true, trigger: "blur", message: "功能名称必须输入" }
-        ],
-        permissionValue: [
-          { required: true, trigger: "blur", message: "功能权限值必须输入" }
-        ]
+        name: [{ required: true, trigger: "blur", message: "功能名称必须输入" }],
+        permissionValue: [{ required: true, trigger: "blur", message: "功能权限值必须输入" }]
       }
     };
   },
@@ -274,13 +258,11 @@ export default {
         })
         .then(() => {
           this.remindMessage("success", "删除成功");
-          this.restData();
+          this.resetData();
         })
         .catch(error => {
           if (error === "cancel") {
             this.remindMessage("info", "已取消删除");
-          } else {
-            this.remindMessage("error", "删除失败");
           }
         });
     },
@@ -299,12 +281,13 @@ export default {
             // 修改
             await update(this.permission);
             this.remindMessage("success", "修改功能成功");
-            this.restData();
+            this.resetData();
+            this.resetRoute();
           } else {
             // 添加
             await save(this.permission);
             this.remindMessage("success", "添加功能成功");
-            this.restData();
+            this.resetData();
           }
         }
       });
@@ -317,12 +300,13 @@ export default {
             // 修改
             await update(this.menu);
             this.remindMessage("success", "修改菜单成功");
-            this.reloadPage();
+            this.resetData();
+            this.resetRoute();
           } else {
             // 添加
             await save(this.menu);
             this.remindMessage("success", "添加菜单成功");
-            this.reloadPage();
+            this.resetData();
           }
         }
       });
@@ -380,7 +364,7 @@ export default {
       this.selectedIcon = value;
     },
     // 重置数据
-    restData() {
+    resetData() {
       // 1.关闭form窗口
       if (this.dialogPermissionVisible) {
         this.dialogPermissionVisible = false;
@@ -393,6 +377,14 @@ export default {
       // 3.清空menu和permission表单
       this.menu = {...menuForm};
       this.permission = {...perForm};
+    },
+    // 重置路由
+    async resetRoute() {
+      const accessRoutes = await this.$store.dispatch("permission/generateRoutes", this.$store.getters.id);
+      resetRouter();
+      for (const route of accessRoutes) {
+        this.$router.addRoute(route);
+      }
     },
     // elementUI消息提示框
     remindMessage(type, message) {
