@@ -2,7 +2,7 @@
   <section class="app-main scroll-bar">
     <transition name="fade-transform" mode="out-in">
       <keep-alive :include="cachedViews">
-        <router-view />
+        <router-view v-if="!reloading"/>
       </keep-alive>
     </transition>
   </section>
@@ -14,6 +14,9 @@ export default {
   computed: {
     cachedViews() {
       return this.$store.getters.cachedViews
+    },
+    reloading() {
+      return this.$store.getters.reloading
     }
   }
 };

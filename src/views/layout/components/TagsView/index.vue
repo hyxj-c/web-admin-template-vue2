@@ -17,7 +17,7 @@
     </scroll-pane>
 
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <!-- <li @click="refreshSelectedTag(selectedTag)">Refresh</li> -->
+      <li v-if="isActive(selectedTag)" @click="refreshSelectedTag(selectedTag)">Refresh</li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">Close</li>
       <li @click="closeOthersTags">Close Others</li>
       <li @click="closeAllTags(selectedTag)">Close All</li>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import NProgress from "nprogress";
 import ScrollPane from './ScrollPane'
 import path from 'path'
 
@@ -127,14 +128,22 @@ export default {
       })
     },
     refreshSelectedTag(view) {
-      this.$store.dispatch('tagsView/delCachedView', view).then(() => {
-        const { fullPath } = view
-        this.$nextTick(() => {
-          this.$router.replace({
-            path: fullPath
-          })
-        })
+      NProgress.start()
+      this.$store.dispatch('tagsView/setReloading', true)
+      this.$nextTick(() => {
+        this.$store.dispatch('tagsView/setReloading', false)
+        NProgress.done()
       })
+
+      // vue router的replace重复路由无效，因此不采用替换路由的方式
+      // this.$store.dispatch('tagsView/delCachedView', view).then(() => {
+      //   const { fullPath } = view
+      //   this.$nextTick(() => {
+      //     this.$router.replace({
+      //       path: fullPath
+      //     })
+      //   })
+      // })
     },
     closeSelectedTag(view) {
       this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {

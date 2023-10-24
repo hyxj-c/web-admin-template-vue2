@@ -1,9 +1,14 @@
 const state = {
   visitedViews: [],
-  cachedViews: []
+  cachedViews: [],
+  reloading: false
 }
 
 const mutations = {
+  SET_RELOADING: (state, flag) => {
+    state.reloading = flag
+  },
+
   ADD_VISITED_VIEW: (state, view) => {
     if (state.visitedViews.some(v => v.path === view.path)) return
     state.visitedViews.push(
@@ -67,6 +72,10 @@ const mutations = {
 }
 
 const actions = {
+  setReloading({ commit }, flag) {
+    commit('SET_RELOADING', flag)
+  },
+
   addView({ dispatch }, view) {
     dispatch('addVisitedView', view)
     dispatch('addCachedView', view)
