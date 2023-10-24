@@ -33,7 +33,7 @@ export const constantRoutes = [
         name: "Dashboard",
         component: () => import("@/views/dashboard/index"),
         titleRoute: true,
-        meta: { title: "Dashboard", icon: "study", affix: true }
+        meta: { title: "Dashboard", icon: "dashboard", affix: true }
       },
       {
         path: "/updatePassword",
