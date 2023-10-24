@@ -240,6 +240,7 @@ export default {
     fetchPermissionMenuList() {
       getPermissionMenuStructure().then(response => {
         this.menuList = response.data.item;
+      }).catch(error => {
       });
     },
     // 删除菜单或权限

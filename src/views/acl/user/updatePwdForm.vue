@@ -26,7 +26,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { updatePassword } from "@/api/login";
+import { updatePassword } from "@/api/acl/user";
 
 const defaultForm = {
   originalPassword: "",
@@ -85,10 +85,12 @@ export default {
         }
         this.saveBtnDisabled = true; // 防止表单重复提交
 
-        await updatePassword(this.id, this.user.originalPassword, this.user.newPassword)
-          .finally(() => {
-            this.saveBtnDisabled = false;
-          });
+        try {
+          await updatePassword(this.id, this.user.originalPassword, this.user.newPassword)
+        } catch (error) {
+          this.saveBtnDisabled = false;
+          return;
+        }
 
         this.$message({ type: "success", message: "修改成功，请重新登录" });
         await this.$store.dispatch("user/logout");

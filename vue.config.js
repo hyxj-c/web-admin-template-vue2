@@ -7,18 +7,18 @@ function resolve(dir) {
 
 module.exports = defineConfig({
   transpileDependencies: true,
-  devServer: {
-  /* 使用代理 */
-    proxy: {
-      "/api": {
-        target: "http://127.0.0.1:8081/",  // 目标代理服务器地址
-        changeOrigin: true, // 允许跨域
-        pathRewrite: {
-          "^/api": ""
-        }
-      }
-    },
-  },
+  // devServer: {
+  // /* 使用代理 */
+  //   proxy: {
+  //     "/api": {
+  //       target: "http://127.0.0.1:8081/",  // 目标代理服务器地址
+  //       changeOrigin: true, // 允许跨域
+  //       pathRewrite: {
+  //         "^/api": ""
+  //       }
+  //     }
+  //   },
+  // },
   lintOnSave: false, // 禁用eslint
   css: { // 配置浏览器显示css所在文件和所在行数
     sourceMap: true

@@ -84,6 +84,9 @@ export default {
           this.list = response.data.items;
           this.total = response.data.total;
           this.listLoading = false;
+        })
+        .catch(error => {
+          this.listLoading = false;
         });
     },
     // 根据id删除数据

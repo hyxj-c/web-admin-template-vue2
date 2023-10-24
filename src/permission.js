@@ -35,24 +35,22 @@ router.beforeEach(async (to, from, next) => {
     // no roles
     try {
       // get user info
-      const { id } = await store.dispatch("user/getInfo", hasToken);
+      const { id } = await store.dispatch("user/getInfo");
 
       // generate accessible routes map
       const accessRoutes = await store.dispatch("permission/generateRoutes", id);
-      console.log('accessRoutes', accessRoutes)
 
       // dynamically add accessible routes
       for (const route of accessRoutes) {
         router.addRoute(route);
       }
-      console.log('routers', router.getRoutes())
 
       next({ ...to, replace: true });
     } catch (error) {
       console.error(error);
       Message.error(error.message || "Has Error");
       // remove token and go to login page to re-login
-      // await store.dispatch("user/logOut");
+      await store.dispatch("user/logOut");
       removeToken();
       next(`/login?redirect=${to.path}`);
       NProgress.done();

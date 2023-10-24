@@ -1,10 +1,14 @@
 import request from "@/utils/request";
 
-// 登录
+/**
+ * 用户登录
+ * @param {用户名} username 
+ * @param {密码} password 
+ * @returns 
+ */
 export function login(username, password) {
   return request({
-    // url: "/admin/acl/login", // 此路径是在spring_security的TokenLoginFilter类下
-    url: "/acl/user/login",
+    url: "/security/login", // 此路径是在spring_security的UserLoginFilter类下
     method: "post",
     data: {
       username,
@@ -13,51 +17,13 @@ export function login(username, password) {
   });
 }
 
-// 获取用户信息
-export function getInfo() {
-  return request({
-    url: "/admin/acl/index/info",
-    method: "get"
-  });
-}
-
-// 修改密码
-export function updatePassword(userId, originalPassword, newPassword) {
-  return request({
-    url: "/admin/acl/user/updatePassword",
-    method: "put",
-    data: {
-      userId,
-      originalPassword,
-      newPassword
-    }
-  });
-}
-
-// 登出
-export function logout() {
-  return request({
-    url: "/admin/acl/index/logout",
-    method: "post"
-  });
-}
-
-// 获取菜单数据
-export function getMenu() {
-  return request({
-    url: "/admin/acl/index/menu",
-    method: "get"
-  });
-}
-
 /**
- * 根据用户id获取用户信息
- * @param {用户id} userId 
+ * 获取用户信息
  * @returns 
  */
-export function getUserInfo(userId) {
+export function getUserInfo() {
   return request({
-    url: `/acl/user/getUserInfo/${userId}`,
+    url: `/acl/user/getUserInfo`,
     method: "get"
   });
 }
@@ -69,7 +35,18 @@ export function getUserInfo(userId) {
  */
 export function getRouteMenu(userId) {
   return request({
-    url: `/acl/user/getPermissionRoute/${userId}`,
+    url: `/acl/user/getRouteMenu/${userId}`,
     method: "get"
+  });
+}
+
+/**
+ * 登出
+ * @returns 
+ */
+export function logout() {
+  return request({
+    url: "/security/logout",
+    method: "post"
   });
 }

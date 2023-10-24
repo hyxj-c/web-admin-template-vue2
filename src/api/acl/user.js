@@ -56,6 +56,25 @@ export function updateById(user) {
 }
 
 /**
+ * 修改用户密码
+ * @param {用户id} userId 
+ * @param {原密码} originalPassword 
+ * @param {新密码} newPassword 
+ * @returns 
+ */
+export function updatePassword(userId, originalPassword, newPassword) {
+  return request({
+    url: `${api_name}/updatePassword`,
+    method: "put",
+    data: {
+      userId,
+      originalPassword,
+      newPassword
+    }
+  });
+}
+
+/**
  * 根据id删除用户
  * @param {用户id} id 
  * @returns 

@@ -17,7 +17,7 @@
     </scroll-pane>
 
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
+      <!-- <li @click="refreshSelectedTag(selectedTag)">Refresh</li> -->
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">Close</li>
       <li @click="closeOthersTags">Close Others</li>
       <li @click="closeAllTags(selectedTag)">Close All</li>
@@ -45,11 +45,8 @@ export default {
       return this.$store.getters.visitedViews
     },
     routes() {
-      return this.$router.options.routes
+      return this.$store.getters.routes
     }
-    // routes() {
-    //   return this.$store.state.permission.routes
-    // }
   },
   watch: {
     $route() {
@@ -134,7 +131,7 @@ export default {
         const { fullPath } = view
         this.$nextTick(() => {
           this.$router.replace({
-            path: '/redirect' + fullPath
+            path: fullPath
           })
         })
       })
@@ -147,7 +144,9 @@ export default {
       })
     },
     closeOthersTags() {
-      this.$router.push(this.selectedTag)
+      if (this.$route.fullPath != this.selectedTag.fullPath) {
+        this.$router.push(this.selectedTag)
+      }
       this.$store.dispatch('tagsView/delOthersViews', this.selectedTag).then(() => {
         this.moveToCurrentTag()
       })

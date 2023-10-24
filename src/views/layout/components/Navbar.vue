@@ -5,7 +5,8 @@
 
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" />
+        <img v-if="avatar" :src="avatar" class="user-avatar" />
+        <img v-else src="@/assets/avatar/avatar.jpg" class="user-avatar">
         <i class="el-icon-caret-bottom" />
       </div>
       <el-dropdown-menu slot="dropdown">
@@ -103,7 +104,7 @@ export default {
         width: 40px;
         height: 40px;
         vertical-align: middle;
-        border-radius: 10px;
+        border-radius: 20px;
       }
     }
   }

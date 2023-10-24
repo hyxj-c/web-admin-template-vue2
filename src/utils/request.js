@@ -12,18 +12,18 @@ const apis = {
 
 // 创建axios实例
 const service = axios.create({
-  // baseURL: process.env.NODE_ENV === 'production' ? apis.production : apis.development, // api 的 base_url
+  baseURL: process.env.NODE_ENV === 'production' ? apis.production : apis.development, // api 的 base_url
   // baseURL: apis.production, // api 的 base_url
-  baseURL: '/api',
-  timeout: 10000 // 请求超时时间
+  // baseURL: '/api',
+  timeout: 50000 // 请求超时时间
 });
 
 // request拦截器
 service.interceptors.request.use(
   config => {
-    // if (store.getters.token) {
-    //   config.headers["token"] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
-    // }
+    if (store.getters.token) {
+      config.headers["token"] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
+    }
     return config;
   },
   error => {
@@ -48,7 +48,7 @@ service.interceptors.response.use(
       });
       // token认证失败，并且是登录状态
       if (res.code === 4001 && store.getters.token) {
-        store.dispatch("LogoutFrontEndDate");
+        store.dispatch("user/logoutFrontEndDate");
         router.push({ path: "/login" });
       }
       return Promise.reject(res);
@@ -57,7 +57,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log("err" + error); // for debug
+    console.log("err", error); // for debug
     Message({
       message: error.message,
       type: "error",

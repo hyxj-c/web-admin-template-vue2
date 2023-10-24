@@ -78,11 +78,15 @@ export default {
     // 加载用户列表数据
     fetchData(page = 1) {
       this.page = page;
-      getPageList(this.page, this.limit, this.searchObj).then(response => {
-        this.list = response.data.items;
-        this.total = response.data.total;
-        this.listLoading = false;
-      });
+      getPageList(this.page, this.limit, this.searchObj)
+        .then(response => {
+          this.list = response.data.items;
+          this.total = response.data.total;
+          this.listLoading = false;
+        })
+        .catch(error => {
+          this.listLoading = false;
+        });
     },
     // 根据id删除数据
     removeDataById(id) {
@@ -144,8 +148,6 @@ export default {
     },
     // 当表格复选框选项发生变化的时候触发
     handleSelectionChange(selection) {
-      console.log("handleSelectionChange......");
-      console.log(selection);
       this.multipleSelection = selection;
     },
     // 点击了添加用户

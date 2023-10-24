@@ -1,5 +1,5 @@
 import { resetRouter } from "@/router";
-import { login, logout, getInfo, getUserInfo } from "@/api/login";
+import { login, logout, getUserInfo } from "@/api/login";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 
 const state = {
@@ -41,10 +41,9 @@ const actions = {
         .then(response => {
           const data = response.data;
           // 把token存入cookie
-          // setToken(data.token);
-          setToken(data.item.id);
+          setToken(data.token);
           commit("SET_TOKEN", data.token);
-          commit("SET_ID", data.item.id);
+          commit("SET_ID", data.id);
           resolve();
         })
         .catch(error => {
@@ -54,18 +53,16 @@ const actions = {
     });
   },
   // 获取用户信息
-  getInfo({ commit }, userId) {
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
-      getUserInfo(userId)
+      getUserInfo()
         .then(response => {
           const data = response.data;
-          console.log("getInfo - data", data);
-
           // 验证该用户是否分配了角色，未分配角色则返回错误状态
           if (data.roles && data.roles.length > 0) {
             commit("SET_ROLES", data.roles);
           } else {
-            reject({message:"该用户未分配角色，请用分配了角色的用户登录！"});
+            reject({ message:"该用户未分配角色，请用分配了角色的用户登录！"});
           }
 
           commit("SET_ID", data.id);
@@ -82,16 +79,14 @@ const actions = {
   // 登出
   logout() {
     return new Promise((resolve, reject) => {
-      // logout()
-      //   .then(() => {
-      //     this.dispatch("user/logoutFrontEndDate");
-      //     resolve();
-      //   })
-      //   .catch(error => {
-      //     reject(error);
-      //   });
-      this.dispatch("user/logoutFrontEndDate");
-      resolve();
+      logout()
+        .then(() => {
+          this.dispatch("user/logoutFrontEndDate");
+          resolve();
+        })
+        .catch(error => {
+          reject(error);
+        });
     });
   },
   // 登出前端数据
