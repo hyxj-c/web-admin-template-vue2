@@ -9,6 +9,10 @@ This project is very concise, and you can quickly devolop based on it.
 
 这个项目非常的简洁，您可以在此项目基础上进行快速开发。
 
+Project preview address: http://123.57.25.196/
+
+项目预览地址：http://123.57.25.196/
+
 ## Project setup
 ```
 npm install
